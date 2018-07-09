@@ -4,6 +4,7 @@ function Character(name, life, damage){
   this.damage = damage;
   this.maxLife = life;
   this.counter = 2;
+  this.maxCounter = 2;
   this.potionCounter = +(Math.random() > 0.7) * 2;
 }
 
@@ -29,6 +30,10 @@ Character.prototype.getLife = function() {
 
 Character.prototype.renewLife = function() { 
   this.life = this.maxLife;
+}
+
+Character.prototype.renewCounter = function() {
+	this.counter = this.maxCounter;
 }
 
 Character.prototype.shouldUseSkill = function() {
@@ -72,7 +77,6 @@ Hero.prototype.getDamage = function() {
     this.potionCounter--;
     return this.damage * 2;
   }
-
   return this.damage;
 }
 
@@ -105,7 +109,6 @@ Monster.prototype.getDamage = function() {
     this.counter--;
     return this.damage * 2;
   }
-
   return this.damage;
 }
 
@@ -123,6 +126,8 @@ function Game(firstPlayer, secondPlayer) {
   this.secondPlayer = secondPlayer;
   this.firstPlayer.renewLife();
   this.secondPlayer.renewLife();
+  this.firstPlayer.renewCounter();
+  this.secondPlayer.renewCounter();
 }
 
 Game.prototype.fight = function() { 
@@ -140,7 +145,7 @@ Game.prototype.getWinner = function() {
   if (this.secondPlayer.isAlive()) {
     currentWinner = this.secondPlayer;
   }
-  console.log('-- The winner is ' + currentWinner);
+  console.log('-- The winner is ' + currentWinner.name);
   return currentWinner;
 }
 
@@ -172,14 +177,11 @@ Tournament.prototype.getListOfGames = function(playersList) {
   for (let i = 0; i < playersList.length; i += 2) {
     listOfGames.push( new Game(playersList[i], playersList[i+1]) );
   }
-  
   return listOfGames;
 }
 
 Tournament.prototype.simulate = function() {
-  let stillAlivePlayers = [];
   stillAlivePlayers = this.registratedPlayers.slice();
-
   while (stillAlivePlayers.length > 1) {
     console.log('');
     console.log('In a current round...');
@@ -196,10 +198,10 @@ Tournament.prototype.simulate = function() {
   console.log(stillAlivePlayers[0].name + ' IS A ABSOLUTELY CHAMPION');
 }
 
-allowedHero = ['Bronislav', 'Stepan', 'Anatoliy'];
-allowedMonster = ['Antoha', 'Kolyan','Gosha'];
+const allowedHero = ['Bronislav', 'Stepan', 'Anatoliy'];
+const allowedMonster = ['Antoha', 'Kolyan','Gosha'];
 
-var Tour = new Tournament(5, allowedHero, allowedMonster);
+const Tour = new Tournament(5, allowedHero, allowedMonster);
 
 Tour.registration(GoblinFactory('Gosha'));
 Tour.registration(FighterFactory('Anatoliy'));
